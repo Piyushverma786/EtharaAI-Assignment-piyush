@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Team Task Manager</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-light">
+    <div class="container py-4">
+      <h1 class="mb-4">Team Task Manager</h1>
+      <p id="authInfo" class="text-muted"></p>
+
+      <div id="authSection" class="card p-3 mb-3">
+        <h5>Signup</h5>
+        <div class="row g-2 mb-3">
+          <div class="col-md-4"><input id="signupName" class="form-control" placeholder="Name" /></div>
+          <div class="col-md-4"><input id="signupEmail" class="form-control" placeholder="Email" /></div>
+          <div class="col-md-4"><input id="signupPassword" class="form-control" type="password" placeholder="Password" /></div>
+        </div>
+        <button class="btn btn-primary mb-4" onclick="signup()">Signup</button>
+
+        <h5>Login</h5>
+        <div class="row g-2 mb-3">
+          <div class="col-md-6"><input id="loginEmail" class="form-control" placeholder="Email" /></div>
+          <div class="col-md-6"><input id="loginPassword" class="form-control" type="password" placeholder="Password" /></div>
+        </div>
+        <button class="btn btn-success" onclick="login()">Login</button>
+      </div>
+
+      <div id="appSection" style="display: none">
+        <div class="d-flex gap-2 mb-3">
+          <button class="btn btn-outline-secondary" onclick="loadDashboard()">Load Dashboard</button>
+          <button class="btn btn-outline-secondary" onclick="loadProjects()">Load Projects</button>
+          <button class="btn btn-danger ms-auto" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="card p-3 mb-3">
+          <h5>Create Project (Admin)</h5>
+          <div class="row g-2">
+            <div class="col-md-4"><input id="projectName" class="form-control" placeholder="Project name" /></div>
+            <div class="col-md-6"><input id="projectDescription" class="form-control" placeholder="Description" /></div>
+            <div class="col-md-2"><button class="btn btn-primary w-100" onclick="createProject()">Create</button></div>
+          </div>
+        </div>
+
+        <div class="card p-3 mb-3">
+          <h5>Add Member to Project (Admin)</h5>
+          <div class="row g-2">
+            <div class="col-md-3"><input id="memberProjectId" class="form-control" placeholder="Project ID" /></div>
+            <div class="col-md-6"><input id="memberEmail" class="form-control" placeholder="Member email" /></div>
+            <div class="col-md-3"><button class="btn btn-primary w-100" onclick="addMember()">Add</button></div>
+          </div>
+        </div>
+
+        <div class="card p-3 mb-3">
+          <h5>Create Task</h5>
+          <div class="row g-2 mb-2">
+            <div class="col-md-2"><input id="taskProjectId" class="form-control" placeholder="Project ID" /></div>
+            <div class="col-md-3"><input id="taskTitle" class="form-control" placeholder="Task title" /></div>
+            <div class="col-md-3"><input id="taskDescription" class="form-control" placeholder="Task description" /></div>
+            <div class="col-md-2"><input id="taskAssigneeId" class="form-control" placeholder="Assignee User ID" /></div>
+            <div class="col-md-2"><input id="taskDueDate" class="form-control" type="date" /></div>
+          </div>
+          <button class="btn btn-primary" onclick="createTask()">Create Task</button>
+        </div>
+
+        <div class="card p-3 mb-3">
+          <h5>Update Task Status</h5>
+          <div class="row g-2">
+            <div class="col-md-4"><input id="statusTaskId" class="form-control" placeholder="Task ID" /></div>
+            <div class="col-md-4">
+              <select id="statusValue" class="form-select">
+                <option value="todo">todo</option>
+                <option value="in_progress">in_progress</option>
+                <option value="done">done</option>
+              </select>
+            </div>
+            <div class="col-md-4"><button class="btn btn-primary w-100" onclick="updateTaskStatus()">Update</button></div>
+          </div>
+        </div>
+
+        <div class="card p-3 mb-3">
+          <h5>Fetch Tasks by Project</h5>
+          <div class="row g-2">
+            <div class="col-md-8"><input id="fetchProjectId" class="form-control" placeholder="Project ID" /></div>
+            <div class="col-md-4"><button class="btn btn-secondary w-100" onclick="fetchTasks()">Fetch</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p-3">
+        <h5>Output</h5>
+        <pre id="output" class="bg-dark text-light p-3 rounded" style="min-height: 220px"></pre>
+      </div>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
