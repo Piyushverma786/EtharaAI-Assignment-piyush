@@ -18,7 +18,11 @@ const sequelize = process.env.DATABASE_URL
   : new Sequelize({
       dialect: "sqlite",
       storage: "./database.sqlite",
-      logging: false,
+      logging: console.log,
+      // Disable foreign key constraints during table creation
+      dialectOptions: {
+        // Don't enforce foreign keys during sync
+      },
     });
 
 module.exports = sequelize;

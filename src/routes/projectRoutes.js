@@ -5,14 +5,27 @@ const { requireRole } = require("../middleware/rbac");
 
 const router = express.Router();
 
+async function getUserProjectIds(userId) {
+  const memberships = await ProjectMember.findAll({
+    where: { userId },
+    attributes: ["projectId"],
+  });
+  return memberships.map((entry) => entry.projectId);
+}
+
+async function ensureProjectMembership(projectId, userId) {
+  return ProjectMember.findOne({ where: { projectId, userId } });
+}
+
 router.post("/", requireRole("admin"), async (req, res) => {
   try {
-    const { name, description } = req.body;
-    if (!name) return res.status(400).json({ message: "Project name is required" });
+    const name = String(req.body?.name || "").trim();
+    const description = String(req.body?.description || "").trim() || null;
+    if (!name) return res.status(400).json({ message: "Project name is required." });
 
     const project = await Project.create({
       name,
-      description: description || null,
+      description,
       ownerId: req.user.id,
     });
 
@@ -30,11 +43,7 @@ router.post("/", requireRole("admin"), async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const projectMemberships = await ProjectMember.findAll({
-      where: { userId: req.user.id },
-      attributes: ["projectId"],
-    });
-    const memberProjectIds = projectMemberships.map((m) => m.projectId);
+    const memberProjectIds = await getUserProjectIds(req.user.id);
 
     const projects = await Project.findAll({
       where: {
@@ -53,7 +62,12 @@ router.get("/", async (req, res) => {
 router.post("/:projectId/members", requireRole("admin"), async (req, res) => {
   try {
     const { projectId } = req.params;
-    const { email, projectRole } = req.body;
+    const email = String(req.body?.email || "").trim().toLowerCase();
+    const projectRole = req.body?.projectRole;
+
+    if (!email) {
+      return res.status(400).json({ message: "Member email is required." });
+    }
 
     const user = await User.findOne({ where: { email } });
     if (!user) return res.status(404).json({ message: "User not found by email" });
@@ -79,9 +93,7 @@ router.post("/:projectId/members", requireRole("admin"), async (req, res) => {
 router.get("/:projectId/members", async (req, res) => {
   try {
     const { projectId } = req.params;
-    const isMember = await ProjectMember.findOne({
-      where: { projectId, userId: req.user.id },
-    });
+    const isMember = await ensureProjectMembership(projectId, req.user.id);
     if (!isMember) return res.status(403).json({ message: "Not a member of this project" });
 
     const members = await ProjectMember.findAll({
