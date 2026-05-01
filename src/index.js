@@ -35,9 +35,9 @@ app.get(/.*/, (_req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-// Debug: log sync operations
 sequelize
-  .sync({ logging: console.log })
+  .authenticate()
+  .then(() => sequelize.sync())
   .then(async () => {
     // Enable foreign keys for SQLite after sync
     if (!process.env.DATABASE_URL) {
