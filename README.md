@@ -83,7 +83,4 @@ A full-stack web app where users can:
 - `PATCH /api/tasks/:taskId/status`
 - `GET /api/dashboard`
 
-## Submission Checklist
-- [ ] Live URL (Railway deployed app)
-- [ ] GitHub repo URL
-- [ ] README (this file)
+
