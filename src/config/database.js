@@ -3,12 +3,18 @@ const { Sequelize } = require("sequelize");
 const isProduction = process.env.NODE_ENV === "production";
 const isRailway = Boolean(process.env.RAILWAY_ENVIRONMENT || process.env.RAILWAY_PROJECT_ID);
 const enableSqlLogging = process.env.DEBUG_SQL === "1";
-const hasDatabaseUrl = Boolean(process.env.DATABASE_URL);
+const databaseUrl =
+  process.env.DATABASE_URL ||
+  process.env.DATABASE_PRIVATE_URL ||
+  process.env.POSTGRES_URL ||
+  process.env.POSTGRESQL_URL ||
+  "";
+const hasDatabaseUrl = Boolean(databaseUrl);
 const hasPgParts = Boolean(process.env.PGHOST && process.env.PGUSER && process.env.PGDATABASE);
 
 if ((isProduction || isRailway) && !hasDatabaseUrl && !hasPgParts) {
   throw new Error(
-    "Postgres config is required for Railway/production. Set DATABASE_URL or PGHOST/PGPORT/PGUSER/PGPASSWORD/PGDATABASE."
+    "Postgres config is required for Railway/production. Set DATABASE_URL (or DATABASE_PRIVATE_URL/POSTGRES_URL) or PGHOST/PGPORT/PGUSER/PGPASSWORD/PGDATABASE."
   );
 }
 
@@ -26,7 +32,7 @@ const basePostgresOptions = {
 };
 
 const sequelize = hasDatabaseUrl
-  ? new Sequelize(process.env.DATABASE_URL, {
+  ? new Sequelize(databaseUrl, {
       ...basePostgresOptions,
     })
   : hasPgParts
